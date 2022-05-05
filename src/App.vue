@@ -1,18 +1,41 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <router-view />
 </template>
 
+<script>
+import { onBeforeMount } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { auth } from "./main.js";
+
+export default {
+  setup() {
+    const router = useRouter();
+    const route = useRoute();
+
+    onBeforeMount(() => {
+      auth.onAuthStateChanged((user) => {
+        if (!user) {
+          router.replace("/login");
+        } else if (route.path == "/login" || route.path == "/register") {
+          router.replace("/");
+        }
+      });
+    });
+  },
+};
+</script>
+
 <style lang="scss">
+body {
+  background: #2c3e50;
+  color: #fff;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
 }
 
 nav {
