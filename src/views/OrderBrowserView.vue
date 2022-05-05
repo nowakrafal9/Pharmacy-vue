@@ -27,7 +27,7 @@
         >
           <li class="nav-item">
             <router-link to="/">
-              <a class="nav-link active" aria-current="page">Home</a>
+              <a class="nav-link" aria-current="page">Home</a>
             </router-link>
           </li>
           <li class="nav-item">
@@ -37,7 +37,7 @@
           </li>
           <li class="nav-item dropdown">
             <a
-              class="nav-link dropdown-toggle"
+              class="nav-link dropdown-toggle active"
               href="#"
               id="navbarDropdown"
               role="button"
@@ -49,11 +49,13 @@
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li>
                 <router-link to="/orderBrowser"
-                  ><a class="dropdown-item w-100">Orders list</a></router-link
+                  ><a class="dropdown-item w-100 active"
+                    >Orders list</a
+                  ></router-link
                 >
               </li>
               <li>
-                <router-link to="/"
+                <router-link to="/orderCreate"
                   ><a class="dropdown-item w-100">New order</a></router-link
                 >
               </li>
@@ -94,7 +96,7 @@
     </div>
   </nav>
 
-  <div>Home</div>
+  <div>Order browser</div>
 </template>
 
 <script>

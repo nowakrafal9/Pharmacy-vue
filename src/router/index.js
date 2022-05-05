@@ -17,6 +17,31 @@ const routes = [
     name: 'register',
     component: () => import('../views/RegisterView.vue')
   },
+  {
+    path: '/productBrowser',
+    name: 'productBrowser',
+    component: () => import('../views/ProductBrowserView.vue')
+  },
+  {
+    path: '/orderBrowser',
+    name: 'orderBrowser',
+    component: () => import('../views/OrderBrowserView.vue')
+  },
+  {
+    path: '/orderCreate',
+    name: 'orderCreate',
+    component: () => import('../views/OrderCreateView.vue')
+  },
+  {
+    path: '/userBrowser',
+    name: 'userBrowser',
+    component: () => import('../views/UserBrowserView.vue')
+  },
+  {
+    path: '/userCreate',
+    name: 'userCreate',
+    component: () => import('../views/UserCreateView.vue')
+  },
 ]
 
 const router = createRouter({

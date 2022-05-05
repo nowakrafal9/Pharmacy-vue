@@ -27,12 +27,12 @@
         >
           <li class="nav-item">
             <router-link to="/">
-              <a class="nav-link active" aria-current="page">Home</a>
+              <a class="nav-link" aria-current="page">Home</a>
             </router-link>
           </li>
           <li class="nav-item">
             <router-link to="/productBrowser">
-              <a class="nav-link">Product browser</a>
+              <a class="nav-link active">Product browser</a>
             </router-link>
           </li>
           <li class="nav-item dropdown">
@@ -53,7 +53,7 @@
                 >
               </li>
               <li>
-                <router-link to="/"
+                <router-link to="/orderCreate"
                   ><a class="dropdown-item w-100">New order</a></router-link
                 >
               </li>
@@ -94,7 +94,7 @@
     </div>
   </nav>
 
-  <div>Home</div>
+  <div>Product browser</div>
 </template>
 
 <script>
