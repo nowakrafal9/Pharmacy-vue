@@ -61,7 +61,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item dropdown">
+          <li class="nav-item dropdown" v-if="store.state.isAdmin">
             <a
               class="nav-link dropdown-toggle"
               href="#"
@@ -87,7 +87,9 @@
           </li>
         </ul>
         <div class="d-flex align-items-center justify-content-center">
-          <span class="text-dark fw-bold pe-4">Logged as: {{ name }}</span>
+          <span class="text-dark fw-bold pe-4"
+            >Logged as: {{ store.state.loggedUser }}</span
+          >
           <button class="btn btn-outline-success" @click="Logout">
             Logout
           </button>
@@ -100,18 +102,11 @@
 </template>
 
 <script>
-import { ref, onBeforeMount } from "vue";
 import { auth } from "../main.js";
+import store from "../store/index.js";
 
 export default {
   setup() {
-    const name = ref("");
-    onBeforeMount(() => {
-      const user = auth.currentUser;
-      if (user) {
-        name.value = user.email.split("@")[0];
-      }
-    });
     const Logout = () => {
       auth
         .signOut()
@@ -119,7 +114,7 @@ export default {
         .catch((err) => alert(err.message));
     };
     return {
-      name,
+      store,
       Logout,
     };
   },
