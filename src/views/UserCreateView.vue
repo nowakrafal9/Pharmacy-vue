@@ -30,35 +30,6 @@
               <a class="nav-link" aria-current="page">Home</a>
             </router-link>
           </li>
-          <li class="nav-item">
-            <router-link to="/productBrowser">
-              <a class="nav-link">Product browser</a>
-            </router-link>
-          </li>
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="navbarDropdown"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Orders
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li>
-                <router-link to="/orderBrowser"
-                  ><a class="dropdown-item w-100">Orders list</a></router-link
-                >
-              </li>
-              <li>
-                <router-link to="/"
-                  ><a class="dropdown-item w-100">New order</a></router-link
-                >
-              </li>
-            </ul>
-          </li>
           <li class="nav-item dropdown" v-if="store.state.isAdmin">
             <a
               class="nav-link dropdown-toggle active"

@@ -146,13 +146,88 @@
             </tr>
             <tr>
               <td>Item price:</td>
-              <td>{{ this.products[this.currentIndex].price }} zł</td>
-              <td>Edit</td>
+              <td v-if="!this.editPrice">
+                {{ this.products[this.currentIndex].price }} zł
+              </td>
+              <td v-else>
+                <input type="number" v-model="this.editedValue" />
+              </td>
+              <td>
+                <button
+                  class="btn btn-outline-secondary"
+                  @click="editField('price')"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-pencil-square"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  v-if="this.editPrice"
+                  class="btn btn-outline-secondary"
+                  @click="saveChanges()"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-check-square"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"
+                    />
+                    <path
+                      d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"
+                    />
+                  </svg>
+                </button>
+              </td>
             </tr>
             <tr>
               <td>Quantity:</td>
-              <td>{{ this.products[this.currentIndex].quantity }} szt.</td>
-              <td>Edit</td>
+              <td v-if="!this.editQuantity">
+                {{ this.products[this.currentIndex].quantity }} szt.
+              </td>
+              <td v-else>
+                <input type="number" v-model="this.editedValue" />
+              </td>
+              <td>
+                <button
+                  class="btn btn-outline-secondary"
+                  @click="editField('quantity')"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-pencil-square"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                    />
+                  </svg>
+                </button>
+              </td>
             </tr>
             <tr>
               <td>Overall price:</td>
@@ -182,6 +257,11 @@ export default {
       products: [],
       show: false,
       currentIndex: null,
+
+      editPrice: false,
+      editQuantity: false,
+
+      editedValue: null,
     };
   },
   setup() {
@@ -221,6 +301,8 @@ export default {
   methods: {
     showDetail: function (index) {
       this.show = true;
+      this.editPrice = false;
+      this.editQuantity = false;
 
       if (this.currentIndex == index) {
         this.show = false;
@@ -231,6 +313,45 @@ export default {
       if (this.currentIndex != index || this.currentIndex == null) {
         this.currentIndex = index;
         return;
+      }
+    },
+    editField: function (fieldToEdit) {
+      if (fieldToEdit == "price") {
+        if (this.editPrice) {
+          this.editPrice = false;
+          return;
+        }
+        this.editPrice = true;
+        this.editQuantity = false;
+        this.editedValue = this.products[this.currentIndex].price;
+      }
+      if (fieldToEdit == "quantity") {
+        if (this.editQuantity) {
+          this.editQuantity = false;
+          return;
+        }
+        this.editQuantity = true;
+        this.editPrice = false;
+        this.editedValue = this.products[this.currentIndex].quantity;
+      }
+    },
+    saveChanges: function () {
+      if (this.editPrice) {
+        this.editPrice = false;
+        if (this.editedValue != this.products[this.currentIndex].price) {
+          this.products[this.currentIndex].price = this.editedValue;
+          db.collection("products")
+            .doc(this.products[this.currentIndex].id)
+            .update("price", this.products[this.currentIndex].price);
+        }
+      } else if (this.editQuantity) {
+        this.editQuantity = false;
+        if (this.editedValue != this.products[this.currentIndex].quantity) {
+          this.quantity[this.currentIndex].price = this.editedValue;
+          db.collection("products")
+            .doc(this.products[this.currentIndex].id)
+            .update("quantity", this.products[this.currentIndex].quantity);
+        }
       }
     },
   },
