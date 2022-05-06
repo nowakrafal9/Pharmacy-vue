@@ -96,14 +96,41 @@
     </div>
   </nav>
 
-  <div>Product browser</div>
+  <div v-if="this.products.length > 0">
+    Last orders
+
+    <table class="table table-striped table-dark">
+      <thead>
+        <tr>
+          <th scope="col">Order date</th>
+          <th scope="col">Ordered by</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in this.products" :key="item.id">
+          <td>{{ item.productName }}</td>
+          <td>{{ item.brand }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="d-flex justify-content-center mt-5" v-else>
+    <div class="spinner-border" style="width: 5rem; height: 5rem" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
 </template>
 
 <script>
-import { auth } from "../main.js";
+import { auth, db } from "../main.js";
 import store from "../store/index.js";
 
 export default {
+  data() {
+    return {
+      products: [],
+    };
+  },
   setup() {
     const Logout = () => {
       auth
@@ -111,10 +138,29 @@ export default {
         .then(() => console.log("Signed out"))
         .catch((err) => alert(err.message));
     };
+
     return {
-      store,
       Logout,
+      store,
     };
+  },
+  created() {
+    let productRef = db.collection("/products");
+    productRef.get().then((snapshot) => {
+      snapshot.forEach((childSnapshot) => {
+        let id = childSnapshot.id;
+        let data = childSnapshot.data();
+
+        this.products.push({
+          id: id,
+          productName: data.productName,
+          brand: data.brand,
+          category: data.category,
+          price: data.price,
+          quantity: data.quantity,
+        });
+      });
+    });
   },
 };
 </script>
