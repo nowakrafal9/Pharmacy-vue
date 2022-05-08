@@ -1,71 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-      <router-link to="/">
-        <a class="navbar-brand">PharmaThory</a>
-      </router-link>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul
-          class="
-            navbar-nav
-            me-auto
-            mb-2 mb-lg-0
-            justify-content-center
-            align-items-center
-          "
-        >
-          <li class="nav-item">
-            <router-link to="/">
-              <a class="nav-link active" aria-current="page">Home</a>
-            </router-link>
-          </li>
-          <li class="nav-item dropdown" v-if="store.state.isAdmin">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="navbarDropdown"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Users
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li>
-                <router-link to="/userBrowser"
-                  ><a class="dropdown-item w-100">User list</a></router-link
-                >
-              </li>
-              <li>
-                <router-link to="/userCreate"
-                  ><a class="dropdown-item w-100">New user</a></router-link
-                >
-              </li>
-            </ul>
-          </li>
-        </ul>
-        <div class="d-flex align-items-center justify-content-center">
-          <span class="text-dark fw-bold pe-4"
-            >Logged as: {{ store.state.loggedUser }}</span
-          >
-          <button class="btn btn-outline-success" @click="Logout">
-            Logout
-          </button>
-        </div>
-      </div>
-    </div>
-  </nav>
+  <Navbar />
 
   <div class="splitContent">
     <div class="d-flex align-baseline justify-content-center">
@@ -202,8 +136,10 @@
 <script>
 import { auth, db } from "../main.js";
 import store from "../store/index.js";
+import Navbar from "../components/NavbarComponent.vue";
 
 export default {
+  components: { Navbar },
   data() {
     return {
       products: [],

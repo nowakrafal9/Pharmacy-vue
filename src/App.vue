@@ -27,6 +27,10 @@ export default {
       auth.signOut();
       router.replace("/login");
     }
+
+    return {
+      store,
+    };
   },
 };
 </script>
