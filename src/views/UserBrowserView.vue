@@ -138,23 +138,72 @@
             </tr>
             <tr>
               <td>Name:</td>
-              <td>{{ this.users[this.currentIndex].name }}</td>
-              <td>Edit</td>
+              <td v-if="!this.editName">
+                {{ this.users[this.currentIndex].name }}
+              </td>
+              <td v-else><input type="text" v-model="this.editedValue" /></td>
+              <td>
+                <button
+                  class="btn btn-outline-secondary"
+                  @click="editField('name')"
+                >
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button
+                  v-if="this.editName"
+                  class="btn btn-outline-secondary"
+                  @click="saveChanges()"
+                >
+                  <i class="bi bi-check-square"></i>
+                </button>
+              </td>
             </tr>
             <tr>
               <td>Surname:</td>
-              <td>{{ this.users[this.currentIndex].surname }}</td>
-              <td>Edit</td>
+              <td v-if="!this.editSurname">
+                {{ this.users[this.currentIndex].surname }}
+              </td>
+              <td v-else><input type="text" v-model="this.editedValue" /></td>
+              <td>
+                <button
+                  class="btn btn-outline-secondary"
+                  @click="editField('surname')"
+                >
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button
+                  v-if="this.editSurname"
+                  class="btn btn-outline-secondary"
+                  @click="saveChanges()"
+                >
+                  <i class="bi bi-check-square"></i>
+                </button>
+              </td>
             </tr>
             <tr>
               <td>Role:</td>
               <td>{{ this.users[this.currentIndex].role }}</td>
-              <td>Edit</td>
+              <td></td>
             </tr>
             <tr>
               <td>Status:</td>
-              <td>{{ this.users[this.currentIndex].statusBlocked }}</td>
-              <td>Edit</td>
+              <td v-if="this.users[this.currentIndex].statusBlocked == true">
+                Blocked
+              </td>
+              <td v-else>Unblocked</td>
+              <td v-if="this.users[this.currentIndex].role != 'Admin'">
+                <button
+                  class="btn btn-outline-secondary"
+                  @click="changeBlockStatus()"
+                >
+                  <i
+                    class="bi bi-unlock"
+                    v-if="this.users[this.currentIndex].statusBlocked == true"
+                  ></i>
+                  <i class="bi bi-lock" v-else></i>
+                </button>
+              </td>
+              <td v-else></td>
             </tr>
           </tbody>
         </table>
@@ -173,6 +222,11 @@ export default {
       users: [],
       show: false,
       currentIndex: null,
+
+      editName: false,
+      editSurname: false,
+      editRole: false,
+      editStatus: false,
     };
   },
   setup() {
@@ -220,6 +274,70 @@ export default {
         this.currentIndex = index;
         return;
       }
+    },
+    clearEdit: function () {
+      this.editName = false;
+      this.editSurname = false;
+      this.editStatus = false;
+    },
+    editField: function (fieldToEdit) {
+      if (fieldToEdit == "name") {
+        if (this.editName) {
+          this.editName = false;
+          return;
+        }
+        this.clearEdit();
+        this.editName = true;
+        this.editedValue = this.users[this.currentIndex].name;
+      }
+
+      if (fieldToEdit == "surname") {
+        if (this.editSurname) {
+          this.editSurname = false;
+          return;
+        }
+        this.clearEdit();
+        this.editSurname = true;
+        this.editedValue = this.users[this.currentIndex].surname;
+      }
+
+      if (fieldToEdit == "status") {
+        if (this.editStatus) {
+          this.editStatus = false;
+          return;
+        }
+        this.clearEdit();
+        this.editStatus = true;
+        this.editedValue = this.users[this.currentIndex].statusBlocked;
+      }
+    },
+    saveChanges: function () {
+      if (this.editName) {
+        this.editName = false;
+        if (this.editedValue != this.users[this.currentIndex].name) {
+          this.users[this.currentIndex].name = this.editedValue;
+          db.collection("users")
+            .doc(this.users[this.currentIndex].id)
+            .update("name", this.users[this.currentIndex].name);
+        }
+      } else if (this.editSurname) {
+        this.editSurname = false;
+
+        if (this.editedValue != this.users[this.currentIndex].surname) {
+          this.users[this.currentIndex].surname = this.editedValue;
+          db.collection("users")
+            .doc(this.users[this.currentIndex].id)
+            .update("surname", this.users[this.currentIndex].surname);
+        }
+      }
+    },
+    changeBlockStatus: function () {
+      this.users[this.currentIndex].statusBlocked =
+        !this.users[this.currentIndex].statusBlocked;
+
+      db.collection("users")
+        .doc(this.users[this.currentIndex].id)
+        .update("statusBlocked", this.users[this.currentIndex].statusBlocked);
     },
   },
 };

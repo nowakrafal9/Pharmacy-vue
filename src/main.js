@@ -7,6 +7,8 @@ import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import 'firebase/compat/firestore'
 
+import 'bootstrap-icons/font/bootstrap-icons.css'
+
 const firebaseConfig = {
     apiKey: "AIzaSyAsBENdbxi9-kd7fK0AVLabdNG532Ws_Mc",
     authDomain: "vue-pharmacy-inv.firebaseapp.com",

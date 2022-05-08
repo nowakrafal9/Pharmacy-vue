@@ -6,6 +6,7 @@
 import { onBeforeMount } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { auth } from "./main.js";
+import store from "./store/index.js";
 
 export default {
   setup() {
@@ -21,6 +22,11 @@ export default {
         }
       });
     });
+
+    if (store.state.loggedUser == "") {
+      auth.signOut();
+      router.replace("/login");
+    }
   },
 };
 </script>
