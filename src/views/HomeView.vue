@@ -1,9 +1,46 @@
 <template>
   <Navbar />
 
+  <div class="input-group mt-3 ms-3 w-50 justify-content-center">
+    <input
+      type="search"
+      class="form-control"
+      placeholder="Product name"
+      aria-label="Search"
+      aria-describedby="search-addon"
+      v-model="this.productName"
+    />
+    <select
+      class="form-select"
+      aria-label="Default select example"
+      v-model="this.selectedBrand"
+    >
+      <option>All brands</option>
+      <option v-for="item in this.brands" :key="item.id">
+        {{ item.name }}
+      </option>
+    </select>
+    <select
+      class="form-select"
+      aria-label="Default select example"
+      v-model="this.selectedCategory"
+    >
+      <option>All categories</option>
+      <option v-for="item in this.category" :key="item.id">
+        {{ item.name }}
+      </option>
+    </select>
+    <button type="button" class="btn btn-outline-primary" @click="filterData">
+      search
+    </button>
+    <button type="button" class="btn btn-outline-primary" @click="clearFilter">
+      clear
+    </button>
+  </div>
+
   <div class="splitContent">
     <div class="d-flex align-baseline justify-content-center">
-      <div class="m-3 w-100" v-if="this.products.length > 0">
+      <div class="m-3 w-100" v-if="this.dataDownloaded">
         <table class="table table-striped table-dark w-100">
           <thead>
             <tr>
@@ -13,7 +50,7 @@
               <th scope="col">Details</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody v-if="this.products.length > 0">
             <tr v-for="(item, index) in this.products" :key="item.id">
               <td>{{ item.productName }}</td>
               <td>{{ item.brand }}</td>
@@ -26,6 +63,11 @@
                   <i class="bi bi-search"></i>
                 </button>
               </td>
+            </tr>
+          </tbody>
+          <tbody v-else>
+            <tr>
+              <td colspan="4">No data found</td>
             </tr>
           </tbody>
         </table>
@@ -137,6 +179,7 @@
 import { auth, db } from "../main.js";
 import store from "../store/index.js";
 import Navbar from "../components/NavbarComponent.vue";
+import { brands, category } from "../data/FilterData.js";
 
 export default {
   components: { Navbar },
@@ -144,12 +187,21 @@ export default {
     return {
       products: [],
       show: false,
+      dataDownloaded: false,
       currentIndex: null,
 
       editPrice: false,
       editQuantity: false,
 
       editedValue: null,
+
+      productName: "",
+      selectedBrand: "All brands",
+      selectedCategory: "All categories",
+
+      previousProductName: "",
+      previousSelectedBrand: "All brands",
+      previousSelectedCategory: "All categories",
     };
   },
   setup() {
@@ -163,28 +215,12 @@ export default {
     return {
       Logout,
       store,
+      brands,
+      category,
     };
   },
   created() {
-    let productRef = db.collection("/products");
-    productRef
-      .orderBy("productName", "asc")
-      .get()
-      .then((snapshot) => {
-        snapshot.forEach((childSnapshot) => {
-          let id = childSnapshot.id;
-          let data = childSnapshot.data();
-
-          this.products.push({
-            id: id,
-            productName: data.productName,
-            brand: data.brand,
-            category: data.category,
-            price: data.price,
-            quantity: data.quantity,
-          });
-        });
-      });
+    this.getAllData();
   },
   methods: {
     showDetail: function (index) {
@@ -242,6 +278,116 @@ export default {
             .update("quantity", this.products[this.currentIndex].quantity);
         }
       }
+    },
+    getAllData: function () {
+      this.products = [];
+
+      let productRef = db.collection("/products");
+      productRef
+        .orderBy("productName", "asc")
+        .get()
+        .then((snapshot) => {
+          snapshot.forEach((childSnapshot) => {
+            let id = childSnapshot.id;
+            let data = childSnapshot.data();
+
+            this.products.push({
+              id: id,
+              productName: data.productName,
+              brand: data.brand,
+              category: data.category,
+              price: data.price,
+              quantity: data.quantity,
+            });
+          });
+          this.dataDownloaded = true;
+        });
+    },
+    filterData: function () {
+      if (
+        this.previousProductName != this.productName ||
+        this.previousSelectedBrand != this.selectedBrand ||
+        this.previousSelectedCategory != this.selectedCategory
+      ) {
+        this.previousProductName = this.productName;
+        this.previousSelectedBrand = this.selectedBrand;
+        this.previousSelectedCategory = this.selectedCategory;
+
+        this.dataDownloaded = false;
+
+        this.editPrice = false;
+        this.editQuantity = false;
+        this.show = false;
+      }
+
+      if (!this.dataDownloaded) {
+        this.products = [];
+
+        let productRef = db.collection("products");
+        if (this.productName != "") {
+          productRef = productRef.where("productName", ">=", this.productName);
+          productRef = productRef.where(
+            "productName",
+            "<=",
+            this.productName + "uf8ff"
+          );
+        }
+        if (this.selectedCategory != "All categories") {
+          productRef = productRef.where(
+            "category",
+            "==",
+            this.selectedCategory
+          );
+        }
+        if (this.selectedBrand != "All brands") {
+          productRef = productRef.where("brand", "==", this.selectedBrand);
+        }
+
+        productRef
+          .orderBy("productName", "asc")
+          .get()
+          .then((snapshot) => {
+            snapshot.forEach((childSnapshot) => {
+              let id = childSnapshot.id;
+              let data = childSnapshot.data();
+
+              this.products.push({
+                id: id,
+                productName: data.productName,
+                brand: data.brand,
+                category: data.category,
+                price: data.price,
+                quantity: data.quantity,
+              });
+            });
+            this.dataDownloaded = true;
+          });
+      }
+    },
+    clearFilter: function () {
+      if (
+        this.previousProductName != "" ||
+        this.previousSelectedBrand != "All brands" ||
+        this.previousSelectedCategory != "All categories"
+      ) {
+        this.dataDownloaded = false;
+
+        this.editPrice = false;
+        this.editQuantity = false;
+        this.show = false;
+      }
+
+      if (!this.dataDownloaded) {
+        this.getAllData();
+      }
+
+      this.productName = "";
+      this.selectedBrand = "All brands";
+      this.selectedCategory = "All categories";
+
+      this.previousProductName = "";
+      this.previousSelectedBrand = "All brands";
+      this.previousSelectedCategory = "All categories";
     },
   },
 };
