@@ -27,7 +27,7 @@
         >
           <li class="nav-item">
             <router-link to="/">
-              <a class="nav-link" aria-current="page">Home</a>
+              <a class="nav-link" aria-current="page">Products</a>
             </router-link>
           </li>
           <li class="nav-item dropdown" v-if="store.state.isAdmin">

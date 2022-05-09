@@ -1,10 +1,17 @@
 <template>
-  <div class="login">
-    <h1>Login</h1>
+  <div class="login mt-3">
+    <h1>Pharmatory</h1>
     <form @submit.prevent="Login">
-      <input type="text" placeholder="email" v-model="email" /> <br />
-      <input type="password" placeholder="password" v-model="password" /> <br />
-      <input type="submit" value="Login" />
+      <input type="text" placeholder="email" v-model="email" class="mt-3" />
+      <br />
+      <input
+        type="password"
+        placeholder="password"
+        v-model="password"
+        class="mt-1"
+      />
+      <br />
+      <input type="submit" value="Login" class="btn btn-secondary mt-3" />
     </form>
   </div>
 </template>

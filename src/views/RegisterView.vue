@@ -5,7 +5,6 @@
       <input type="text" placeholder="email" v-model="email" /> <br />
       <input type="password" placeholder="password" v-model="password" /> <br />
       <input type="submit" value="Register" />
-      <p>Have an account? <router-link to="/login">Login here</router-link></p>
     </form>
   </div>
 </template>

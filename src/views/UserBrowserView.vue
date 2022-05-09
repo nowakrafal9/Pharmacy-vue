@@ -26,10 +26,18 @@
       aria-describedby="search-addon"
       v-model="this.userSurname"
     /> -->
-    <button type="button" class="btn btn-outline-primary" @click="filterData">
+    <button
+      type="button"
+      class="btn btn-outline-warning rounded ms-1"
+      @click="filterData"
+    >
       search
     </button>
-    <button type="button" class="btn btn-outline-primary" @click="clearFilter">
+    <button
+      type="button"
+      class="btn btn-outline-warning rounded ms-1"
+      @click="clearFilter"
+    >
       clear
     </button>
   </div>
@@ -53,21 +61,10 @@
               <td>{{ item.surname }}</td>
               <td>
                 <button
-                  class="btn btn-outline-success"
+                  class="btn btn-outline-warning"
                   @click="showDetail(index)"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    class="bi bi-search"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
-                    />
-                  </svg>
+                  <i class="bi bi-search"></i>
                 </button>
               </td>
             </tr>
@@ -114,17 +111,25 @@
               <td v-else><input type="text" v-model="this.editedValue" /></td>
               <td>
                 <button
-                  class="btn btn-outline-secondary"
+                  class="btn btn-outline-warning"
                   @click="editField('name')"
+                  v-if="!this.editName"
                 >
                   <i class="bi bi-pencil-square"></i>
                 </button>
                 <button
+                  class="btn btn-outline-warning"
+                  @click="editField('name')"
+                  v-else
+                >
+                  <i class="bi bi-x-lg"></i>
+                </button>
+                <button
                   v-if="this.editName"
-                  class="btn btn-outline-secondary"
+                  class="btn btn-outline-warning ms-3"
                   @click="saveChanges()"
                 >
-                  <i class="bi bi-check-square"></i>
+                  <i class="bi bi-check-lg"></i>
                 </button>
               </td>
             </tr>
@@ -136,17 +141,25 @@
               <td v-else><input type="text" v-model="this.editedValue" /></td>
               <td>
                 <button
-                  class="btn btn-outline-secondary"
+                  class="btn btn-outline-warning"
                   @click="editField('surname')"
+                  v-if="!this.editSurname"
                 >
                   <i class="bi bi-pencil-square"></i>
                 </button>
                 <button
+                  class="btn btn-outline-warning"
+                  @click="editField('surname')"
+                  v-else
+                >
+                  <i class="bi bi-x-lg"></i>
+                </button>
+                <button
                   v-if="this.editSurname"
-                  class="btn btn-outline-secondary"
+                  class="btn btn-outline-warning ms-3"
                   @click="saveChanges()"
                 >
-                  <i class="bi bi-check-square"></i>
+                  <i class="bi bi-check-lg"></i>
                 </button>
               </td>
             </tr>
@@ -163,7 +176,7 @@
               <td v-else>Unblocked</td>
               <td v-if="this.users[this.currentIndex].role != 'Admin'">
                 <button
-                  class="btn btn-outline-secondary"
+                  class="btn btn-outline-warning"
                   @click="changeBlockStatus()"
                 >
                   <i
@@ -340,6 +353,7 @@ export default {
         this.editSurname = false;
         this.editRole = false;
         this.editStatus = false;
+        this.show = false;
       }
 
       if (!this.dataDownloaded) {

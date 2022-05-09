@@ -33,14 +33,14 @@
         </select>
         <button
           type="button"
-          class="btn btn-outline-primary"
+          class="btn btn-outline-warning rounded ms-1"
           @click="filterData"
         >
           search
         </button>
         <button
           type="button"
-          class="btn btn-outline-primary"
+          class="btn btn-outline-warning rounded ms-1"
           @click="clearFilter"
         >
           clear
@@ -48,8 +48,8 @@
       </div>
 
       <div class="splitContent">
-        <div class="d-flex align-baseline justify-content-center">
-          <div class="m-3 w-100" v-if="this.dataDownloaded">
+        <div class="d-flex mt-3 align-baseline justify-content-center">
+          <div class="w-100" v-if="this.dataDownloaded">
             <table class="table table-striped table-dark w-100">
               <thead>
                 <tr>
@@ -60,13 +60,19 @@
                 </tr>
               </thead>
               <tbody v-if="this.products.length > 0">
-                <tr v-for="(item, index) in this.products" :key="item.id">
+                <tr
+                  v-for="(item, index) in this.products.slice(
+                    this.firstRecord,
+                    this.lastRecord
+                  )"
+                  :key="item.id"
+                >
                   <td>{{ item.productName }}</td>
                   <td>{{ item.brand }}</td>
                   <td>{{ item.category }}</td>
                   <td>
                     <button
-                      class="btn btn-outline-success"
+                      class="btn btn-outline-warning"
                       @click="showDetail(index)"
                     >
                       <i class="bi bi-search"></i>
@@ -80,6 +86,32 @@
                 </tr>
               </tbody>
             </table>
+
+            <ul class="pagination align-baseline justify-content-center">
+              <li class="page-item">
+                <button @click="FirstPage" class="btn btn-outline-warning me-2">
+                  <i class="bi bi-chevron-double-left"></i>
+                </button>
+              </li>
+              <li class="page-item">
+                <button
+                  @click="PreviousPage"
+                  class="btn btn-outline-warning me-2"
+                >
+                  <i class="bi bi-chevron-left"></i>
+                </button>
+              </li>
+              <li class="page-item">
+                <button @click="NextPage" class="btn btn-outline-warning ms-2">
+                  <i class="bi bi-chevron-right"></i>
+                </button>
+              </li>
+              <li class="page-item">
+                <button @click="LastPage" class="btn btn-outline-warning ms-2">
+                  <i class="bi bi-chevron-double-right"></i>
+                </button>
+              </li>
+            </ul>
           </div>
           <div class="d-flex justify-content-center mt-5" v-else>
             <div
@@ -131,17 +163,25 @@
                   </td>
                   <td>
                     <button
-                      class="btn btn-outline-secondary"
+                      class="btn btn-outline-warning"
                       @click="editField('price')"
+                      v-if="!this.editPrice"
                     >
                       <i class="bi bi-pencil-square"></i>
                     </button>
                     <button
+                      class="btn btn-outline-warning"
+                      @click="editField('price')"
+                      v-else
+                    >
+                      <i class="bi bi-x-lg"></i>
+                    </button>
+                    <button
                       v-if="this.editPrice"
-                      class="btn btn-outline-secondary"
+                      class="btn btn-outline-warning ms-3"
                       @click="saveChanges()"
                     >
-                      <i class="bi bi-check-square"></i>
+                      <i class="bi bi-check-lg"></i>
                     </button>
                   </td>
                 </tr>
@@ -155,17 +195,25 @@
                   </td>
                   <td>
                     <button
-                      class="btn btn-outline-secondary"
+                      class="btn btn-outline-warning"
                       @click="editField('quantity')"
+                      v-if="!this.editQuantity"
                     >
                       <i class="bi bi-pencil-square"></i>
                     </button>
                     <button
+                      class="btn btn-outline-warning"
+                      @click="editField('quantity')"
+                      v-else
+                    >
+                      <i class="bi bi-x-lg"></i>
+                    </button>
+                    <button
                       v-if="this.editQuantity"
-                      class="btn btn-outline-secondary"
+                      class="btn btn-outline-warning ms-3"
                       @click="saveChanges()"
                     >
-                      <i class="bi bi-check-square"></i>
+                      <i class="bi bi-check-lg"></i>
                     </button>
                   </td>
                 </tr>
@@ -228,6 +276,15 @@ export default {
       previousProductName: "",
       previousSelectedBrand: "All brands",
       previousSelectedCategory: "All categories",
+
+      numOfRecords: 0,
+      recordsPerPage: 3,
+      numOfPages: 0,
+      recordsOnLastPage: 0,
+
+      firstRecord: 0,
+      lastRecord: 0,
+      currentPage: 1,
     };
   },
   setup() {
@@ -310,11 +367,11 @@ export default {
         }
       }
     },
-    getAllData: function () {
+    getAllData: async function () {
       this.products = [];
 
       let productRef = db.collection("/products");
-      productRef
+      await productRef
         .orderBy("productName", "asc")
         .get()
         .then((snapshot) => {
@@ -333,8 +390,10 @@ export default {
           });
           this.dataDownloaded = true;
         });
+
+      this.setPages();
     },
-    filterData: function () {
+    filterData: async function () {
       if (
         this.previousProductName != this.productName ||
         this.previousSelectedBrand != this.selectedBrand ||
@@ -374,7 +433,7 @@ export default {
           productRef = productRef.where("brand", "==", this.selectedBrand);
         }
 
-        productRef
+        await productRef
           .orderBy("productName", "asc")
           .get()
           .then((snapshot) => {
@@ -419,6 +478,46 @@ export default {
       this.previousProductName = "";
       this.previousSelectedBrand = "All brands";
       this.previousSelectedCategory = "All categories";
+    },
+    FirstPage: function () {
+      this.currentPage = 1;
+
+      this.firstRecord = 0;
+      this.lastRecord = this.recordsPerPage;
+    },
+    PreviousPage: function () {
+      console.log("Previous");
+    },
+    NextPage: function () {
+      if (this.currentPage != this.numOfPages) {
+        this.currentPage++;
+
+        if (this.currentPage < this.numOfPages) {
+          this.firstRecord += this.recordsPerPage;
+          this.lastRecord += this.recordsPerPage;
+        } else {
+          this.firstRecord += this.recordsPerPage;
+          this.lastRecord = this.numOfRecords + 1;
+        }
+      }
+    },
+    LastPage: function () {
+      this.currentPage = this.numOfPages;
+
+      this.firstRecord = (this.currentPage - 1) * this.recordsPerPage;
+      this.lastRecord = this.numOfRecords + 1;
+    },
+    setPages: function () {
+      this.numOfRecords = this.products.length;
+      this.recordsOnLastPage = this.numOfRecords % this.recordsPerPage;
+      this.numOfRecords -= this.recordsOnLastPage;
+      this.numOfPages = Math.floor(this.numOfRecords / this.recordsPerPage);
+      if (this.recordsOnLastPage != 0) {
+        this.numOfPages++;
+      }
+
+      this.firstRecord = 0;
+      this.lastRecord = this.recordsPerPage;
     },
   },
 };
