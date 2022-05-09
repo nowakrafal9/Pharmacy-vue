@@ -21,12 +21,12 @@ export default {
           router.replace("/");
         }
       });
-    });
 
-    if (store.state.loggedUser == "") {
-      auth.signOut();
-      router.replace("/login");
-    }
+      if (store.state.loggedUser == "") {
+        auth.signOut();
+        router.replace("/login");
+      }
+    });
 
     return {
       store,

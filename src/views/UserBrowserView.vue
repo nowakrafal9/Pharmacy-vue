@@ -1,19 +1,52 @@
 <template>
   <Navbar />
 
+  <div class="input-group mt-3 ms-3 w-25 justify-content-center">
+    <input
+      type="search"
+      class="form-control"
+      placeholder="User email"
+      aria-label="Search"
+      aria-describedby="search-addon"
+      v-model="this.userEmail"
+    />
+    <!-- <input
+      type="search"
+      class="form-control"
+      placeholder="User name"
+      aria-label="Search"
+      aria-describedby="search-addon"
+      v-model="this.userName"
+    />
+    <input
+      type="search"
+      class="form-control"
+      placeholder="User surname"
+      aria-label="Search"
+      aria-describedby="search-addon"
+      v-model="this.userSurname"
+    /> -->
+    <button type="button" class="btn btn-outline-primary" @click="filterData">
+      search
+    </button>
+    <button type="button" class="btn btn-outline-primary" @click="clearFilter">
+      clear
+    </button>
+  </div>
+
   <div class="splitContent">
     <div class="d-flex align-baseline justify-content-center">
-      <div class="m-3 w-100" v-if="this.users.length > 0">
+      <div class="m-3 w-100" v-if="this.dataDownloaded">
         <table class="table table-striped table-dark w-100">
           <thead>
             <tr>
               <th scope="col">Email</th>
               <th scope="col">Name</th>
               <th scope="col">Surname</th>
-              <th scope="col">Status</th>
+              <th scope="col">Details</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody v-if="this.users.length > 0">
             <tr v-for="(item, index) in this.users" :key="item.id">
               <td>{{ item.email }}</td>
               <td>{{ item.name }}</td>
@@ -37,6 +70,11 @@
                   </svg>
                 </button>
               </td>
+            </tr>
+          </tbody>
+          <tbody v-else>
+            <tr>
+              <td colspan="4">No data found</td>
             </tr>
           </tbody>
         </table>
@@ -145,7 +183,7 @@
 </template>
 
 <script>
-import { auth, db } from "../main.js";
+import { db } from "../main.js";
 import store from "../store/index.js";
 import Navbar from "../components/NavbarComponent.vue";
 
@@ -157,6 +195,16 @@ export default {
       show: false,
       currentIndex: null,
 
+      dataDownloaded: false,
+
+      userEmail: "",
+      userName: "",
+      userSurname: "",
+
+      previousUserEmail: "",
+      previousUserName: "",
+      previousUserSurname: "",
+
       editName: false,
       editSurname: false,
       editRole: false,
@@ -164,35 +212,12 @@ export default {
     };
   },
   setup() {
-    const Logout = () => {
-      auth
-        .signOut()
-        .then(() => console.log("Signed out"))
-        .catch((err) => alert(err.message));
-    };
-
     return {
-      Logout,
       store,
     };
   },
   created() {
-    let usersRef = db.collection("/users");
-    usersRef.get().then((snapshot) => {
-      snapshot.forEach((childSnapshot) => {
-        let id = childSnapshot.id;
-        let data = childSnapshot.data();
-
-        this.users.push({
-          id: id,
-          email: data.email,
-          name: data.name,
-          surname: data.surname,
-          role: data.role,
-          statusBlocked: data.statusBlocked,
-        });
-      });
-    });
+    this.getAllData();
   },
   methods: {
     showDetail: function (index) {
@@ -272,6 +297,107 @@ export default {
       db.collection("users")
         .doc(this.users[this.currentIndex].id)
         .update("statusBlocked", this.users[this.currentIndex].statusBlocked);
+    },
+    getAllData: function () {
+      this.users = [];
+
+      let userRef = db.collection("users");
+      userRef
+        .where("role", "!=", "Admin")
+        .orderBy("role", "asc")
+        .orderBy("email", "asc")
+        .get()
+        .then((snapshot) => {
+          snapshot.forEach((childSnapshot) => {
+            let id = childSnapshot.id;
+            let data = childSnapshot.data();
+
+            this.users.push({
+              id: id,
+              email: data.email,
+              name: data.name,
+              surname: data.surname,
+              role: data.role,
+              statusBlocked: data.statusBlocked,
+            });
+          });
+          this.dataDownloaded = true;
+        });
+    },
+    filterData: function () {
+      if (
+        this.previousUserEmail != this.userEmail ||
+        this.previousUserName != this.userName ||
+        this.previousUserSurname != this.userSurname
+      ) {
+        this.previousUserEmail = this.userEmail;
+        this.previousUserName = this.userName;
+        this.previousUserSurname = this.userSurname;
+
+        this.dataDownloaded = false;
+
+        this.editName = false;
+        this.editSurname = false;
+        this.editRole = false;
+        this.editStatus = false;
+      }
+
+      if (!this.dataDownloaded) {
+        this.users = [];
+
+        let userRef = db.collection("users");
+        if (this.userEmail != "") {
+          userRef = userRef.where("email", ">=", this.userEmail);
+          userRef = userRef.where("email", "<=", this.userEmail + "uf8ff");
+        }
+
+        userRef
+          .orderBy("email", "asc")
+          .get()
+          .then((snapshot) => {
+            snapshot.forEach((childSnapshot) => {
+              let id = childSnapshot.id;
+              let data = childSnapshot.data();
+
+              this.users.push({
+                id: id,
+                email: data.email,
+                name: data.name,
+                surname: data.surname,
+                role: data.role,
+                statusBlocked: data.statusBlocked,
+              });
+            });
+            this.dataDownloaded = true;
+          });
+      }
+    },
+    clearFilter: function () {
+      if (
+        this.previousUserEmail != "" ||
+        this.previousUserName != "" ||
+        this.previousUserSurname != ""
+      ) {
+        this.dataDownloaded = false;
+
+        this.editName = false;
+        this.editSurname = false;
+        this.editRole = false;
+        this.editStatus = false;
+        this.show = false;
+      }
+
+      if (!this.dataDownloaded) {
+        this.getAllData();
+      }
+
+      this.userEmail = "";
+      this.userName = "";
+      this.userSurname = "";
+
+      this.previousUserEmail = "";
+      this.previousUserName = "";
+      this.previousUserSurname = "";
     },
   },
 };

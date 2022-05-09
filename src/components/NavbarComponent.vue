@@ -77,7 +77,12 @@ export default {
     const Logout = () => {
       auth
         .signOut()
-        .then(() => console.log("Signed out"))
+        .then(() => {
+          store.state.loggedUser = "";
+          store.state.isAdmin = false;
+          store.state.isBlocked = false;
+          store.state.loadPage = false;
+        })
         .catch((err) => alert(err.message));
     };
 

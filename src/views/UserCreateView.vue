@@ -73,15 +73,8 @@ export default {
     },
   },
   setup() {
-    const Logout = () => {
-      auth
-        .signOut()
-        .then(() => console.log("Signed out"))
-        .catch((err) => alert(err.message));
-    };
     return {
       store,
-      Logout,
     };
   },
 };

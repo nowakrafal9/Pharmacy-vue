@@ -13,17 +13,17 @@
 import { ref } from "vue";
 import store from "../store/index";
 import { auth, db } from "../main.js";
+// import { useRouter } from "vue-router";
 
 export default {
   setup() {
     const email = ref("");
     const password = ref("");
 
-    const Login = () => {
-      auth
+    const Login = async () => {
+      await auth
         .signInWithEmailAndPassword(email.value, password.value)
         .then((data) => {
-          console.log(data);
           store.state.loggedUser = email.value.split("@")[0];
           setPrivillage(data.user.uid);
         })
@@ -34,17 +34,20 @@ export default {
         });
     };
 
-    const setPrivillage = (uid) => {
-      var adminsRef = db.collection("/adminUsers");
-      adminsRef
-        .where("id", "==", uid)
-        .limit(1)
-        .get()
-        .then(function (snapshot) {
-          if (!snapshot.empty) {
+    const setPrivillage = async (uid) => {
+      var userRef = db.collection("/users").doc(uid);
+      await userRef.get().then((snapshot) => {
+        if (!snapshot.isEmpty) {
+          if (snapshot.data().role == "Admin") {
             store.state.isAdmin = true;
           }
-        });
+          if (snapshot.data().statusBlocked == true) {
+            store.state.isBlocked = true;
+          }
+        }
+      });
+
+      store.state.loadPage = true;
     };
 
     return {
