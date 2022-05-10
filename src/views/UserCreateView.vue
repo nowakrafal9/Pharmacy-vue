@@ -26,49 +26,60 @@
       v-if="!this.creatingUser"
     >
       <h2 class="m-0">Register employee</h2>
-      <div class="form-floating" style="color: gray">
+      <form @submit="createUser()">
+        <div class="form-floating" style="color: gray">
+          <input
+            type="email"
+            class="form-control"
+            id="floatingInput"
+            placeholder="name@example.com"
+            v-model="this.email"
+            required
+          />
+          <label for="floatingInput">Email address</label>
+        </div>
+        <div class="form-floating mt-3" style="color: gray">
+          <input
+            type="password"
+            class="form-control"
+            id="floatingInput"
+            placeholder="name@example.com"
+            v-model="this.password"
+            required
+            minlength="6"
+          />
+          <label for="floatingInput">Password</label>
+        </div>
+        <div class="form-floating mt-3" style="color: gray">
+          <input
+            type="text"
+            class="form-control"
+            id="floatingInput"
+            placeholder="name@example.com"
+            v-model="this.name"
+            required
+            @keypress="isLetter($event)"
+          />
+          <label for="floatingInput">Name</label>
+        </div>
+        <div class="form-floating mt-3" style="color: gray">
+          <input
+            type="text"
+            class="form-control"
+            id="floatingInput"
+            placeholder="name@example.com"
+            v-model="this.surname"
+            required
+            @keypress="isLetter($event)"
+          />
+          <label for="floatingInput">Surname</label>
+        </div>
         <input
-          type="email"
-          class="form-control"
-          id="floatingInput"
-          placeholder="name@example.com"
-          v-model="this.email"
+          type="submit"
+          value="Submit"
+          class="btn btn-outline-warning mt-3"
         />
-        <label for="floatingInput">Email address</label>
-      </div>
-      <div class="form-floating" style="color: gray">
-        <input
-          type="email"
-          class="form-control"
-          id="floatingInput"
-          placeholder="name@example.com"
-          v-model="this.password"
-        />
-        <label for="floatingInput">Password</label>
-      </div>
-      <div class="form-floating" style="color: gray">
-        <input
-          type="email"
-          class="form-control"
-          id="floatingInput"
-          placeholder="name@example.com"
-          v-model="this.name"
-        />
-        <label for="floatingInput">Name</label>
-      </div>
-      <div class="form-floating" style="color: gray">
-        <input
-          type="email"
-          class="form-control"
-          id="floatingInput"
-          placeholder="name@example.com"
-          v-model="this.surname"
-        />
-        <label for="floatingInput">Surname</label>
-      </div>
-      <button class="btn btn-outline-warning" @click="createUser()">
-        Register user
-      </button>
+      </form>
     </div>
     <div class="d-flex justify-content-center mt-5" v-else>
       <div
@@ -117,6 +128,9 @@ export default {
         this.name != "" &&
         this.surname != ""
       ) {
+        this.name = this.transformWord(this.name);
+        this.surname = this.transformWord(this.surname);
+
         this.creatingUser = true;
         await auth
           .createUserWithEmailAndPassword(this.email, this.password)
@@ -124,8 +138,8 @@ export default {
             this.createDocForUser(cred.user.uid);
           })
           .catch((err) => {
-            console.log(err);
-            this.feedback = err.message;
+            this.creatingUser = false;
+            alert(err);
           });
       } else {
         alert("All field must be filled");
@@ -151,6 +165,20 @@ export default {
         });
 
       this.creatingUser = false;
+    },
+    transformWord: function (string) {
+      string = string.toLowerCase();
+
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    },
+    isLetter: function (evt) {
+      evt = evt ? evt : window.event;
+      let charCode = evt.which ? evt.which : evt.keyCode;
+      if ((charCode >= 65 && charCode < 122) || charCode == 32) {
+        return true;
+      } else {
+        evt.preventDefault();
+      }
     },
   },
 };

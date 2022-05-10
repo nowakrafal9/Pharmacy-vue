@@ -1,18 +1,55 @@
 <template>
-  <div class="login mt-3">
-    <h1>Pharmatory</h1>
-    <form @submit.prevent="Login">
-      <input type="text" placeholder="email" v-model="email" class="mt-3" />
-      <br />
-      <input
-        type="password"
-        placeholder="password"
-        v-model="password"
-        class="mt-1"
-      />
-      <br />
-      <input type="submit" value="Login" class="btn btn-secondary mt-3" />
-    </form>
+  <div
+    class="
+      mt-3
+      d-flex
+      flex-column
+      align-items-center
+      justify-content-center
+      gap-3
+    "
+  >
+    <div
+      class="
+        d-flex
+        flex-column
+        align-items-center
+        justify-content-center
+        gap-3
+        p-4
+        shadow
+        rounded
+      "
+      style="background: hsl(210, 29%, 35%)"
+    >
+      <h2 class="m-0">Pharmatory</h2>
+      <form @submit.prevent="Login">
+        <div class="form-floating" style="color: gray">
+          <input
+            type="email"
+            class="form-control"
+            id="floatingInput"
+            placeholder="name@example.com"
+            v-model="email"
+            required
+          />
+          <label for="floatingInput">Email address</label>
+        </div>
+        <div class="form-floating mt-3" style="color: gray">
+          <input
+            type="password"
+            class="form-control"
+            id="floatingInput"
+            placeholder="name@example.com"
+            v-model="password"
+            required
+          />
+          <label for="floatingInput">Password</label>
+        </div>
+        <br />
+        <input type="submit" value="Login" class="btn btn-outline-warning" />
+      </form>
+    </div>
   </div>
 </template>
 
