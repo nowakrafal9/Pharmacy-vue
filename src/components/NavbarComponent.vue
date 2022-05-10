@@ -1,8 +1,8 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
       <router-link to="/">
-        <a class="navbar-brand">PharmaThory</a>
+        <a class="navbar-brand text-warning">PharmaThory</a>
       </router-link>
       <button
         class="navbar-toggler"
@@ -27,13 +27,12 @@
         >
           <li class="nav-item">
             <router-link to="/">
-              <a class="nav-link" aria-current="page">Products</a>
+              <a class="nav-link text-light" aria-current="page">Products</a>
             </router-link>
           </li>
           <li class="nav-item dropdown" v-if="store.state.isAdmin">
             <a
-              class="nav-link dropdown-toggle"
-              href="#"
+              class="nav-link dropdown-toggle text-light"
               id="navbarDropdown"
               role="button"
               data-bs-toggle="dropdown"
@@ -56,10 +55,10 @@
           </li>
         </ul>
         <div class="d-flex align-items-center justify-content-center">
-          <span class="text-dark fw-bold pe-4"
+          <span class="text-light fw-bold pe-4"
             >Logged as: {{ store.state.loggedUser }}</span
           >
-          <button class="btn btn-outline-success" @click="Logout">
+          <button class="btn btn-outline-warning" @click="Logout">
             Logout
           </button>
         </div>

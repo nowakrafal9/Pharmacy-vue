@@ -6,11 +6,6 @@ export default createStore({
     isAdmin: false,
     isBlocked: false,
 
-    products: [],
-    isProductsLoaded: false,
-    users: [],
-    isUsersLoaded: false,
-
     loadPage: false
   },
   getters: {

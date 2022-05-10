@@ -1,16 +1,18 @@
 <template>
   <Navbar />
 
-  <div class="input-group mt-3 ms-3 w-25 justify-content-center">
-    <input
-      type="search"
-      class="form-control"
-      placeholder="User email"
-      aria-label="Search"
-      aria-describedby="search-addon"
-      v-model="this.userEmail"
-    />
-    <!-- <input
+  <div class="splitContent">
+    <div class="d-flex flex-column align-baseline justify-content-center">
+      <div class="input-group mt-3 ms-3">
+        <input
+          type="search"
+          class="form-control rounded"
+          placeholder="User email"
+          aria-label="Search"
+          aria-describedby="search-addon"
+          v-model="this.userEmail"
+        />
+        <!-- <input
       type="search"
       class="form-control"
       placeholder="User name"
@@ -26,24 +28,21 @@
       aria-describedby="search-addon"
       v-model="this.userSurname"
     /> -->
-    <button
-      type="button"
-      class="btn btn-outline-warning rounded ms-1"
-      @click="filterData"
-    >
-      search
-    </button>
-    <button
-      type="button"
-      class="btn btn-outline-warning rounded ms-1"
-      @click="clearFilter"
-    >
-      clear
-    </button>
-  </div>
-
-  <div class="splitContent">
-    <div class="d-flex align-baseline justify-content-center">
+        <button
+          type="button"
+          class="btn btn-outline-warning rounded ms-1"
+          @click="filterData"
+        >
+          search
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-warning rounded ms-1"
+          @click="clearFilter"
+        >
+          clear
+        </button>
+      </div>
       <div class="m-3 w-100" v-if="this.dataDownloaded">
         <table class="table table-striped table-dark w-100">
           <thead>
@@ -108,7 +107,9 @@
               <td v-if="!this.editName">
                 {{ this.users[this.currentIndex].name }}
               </td>
-              <td v-else><input type="text" v-model="this.editedValue" /></td>
+              <td v-else>
+                <input type="text" class="rounded" v-model="this.editedValue" />
+              </td>
               <td>
                 <button
                   class="btn btn-outline-warning"
@@ -138,7 +139,9 @@
               <td v-if="!this.editSurname">
                 {{ this.users[this.currentIndex].surname }}
               </td>
-              <td v-else><input type="text" v-model="this.editedValue" /></td>
+              <td v-else>
+                <input type="text" class="rounded" v-model="this.editedValue" />
+              </td>
               <td>
                 <button
                   class="btn btn-outline-warning"

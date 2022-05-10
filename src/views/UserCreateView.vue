@@ -1,22 +1,83 @@
 <template>
   <Navbar />
 
-  <div class="m-3" v-if="!this.creatingUser">
-    <h2>Register employee</h2>
-    <input type="text" placeholder="email" v-model="this.email" /> <br />
-    <input type="password" placeholder="password" v-model="this.password" />
-    <br />
-    <input type="name" placeholder="name" v-model="this.name" /> <br />
-    <input type="surname" placeholder="surname" v-model="this.surname" />
-    <br />
-    <br />
-    <button class="btn btn-outline-warning" @click="createUser()">
-      Register user
-    </button>
-  </div>
-  <div class="d-flex justify-content-center mt-5" v-else>
-    <div class="spinner-border" style="width: 5rem; height: 5rem" role="status">
-      <span class="visually-hidden">Loading...</span>
+  <div
+    class="
+      mt-3
+      d-flex
+      flex-column
+      align-items-center
+      justify-content-center
+      gap-3
+    "
+  >
+    <div
+      class="
+        d-flex
+        flex-column
+        align-items-center
+        justify-content-center
+        gap-3
+        p-4
+        shadow
+        rounded
+      "
+      style="background: hsl(210, 29%, 35%)"
+      v-if="!this.creatingUser"
+    >
+      <h2 class="m-0">Register employee</h2>
+      <div class="form-floating" style="color: gray">
+        <input
+          type="email"
+          class="form-control"
+          id="floatingInput"
+          placeholder="name@example.com"
+          v-model="this.email"
+        />
+        <label for="floatingInput">Email address</label>
+      </div>
+      <div class="form-floating" style="color: gray">
+        <input
+          type="email"
+          class="form-control"
+          id="floatingInput"
+          placeholder="name@example.com"
+          v-model="this.password"
+        />
+        <label for="floatingInput">Password</label>
+      </div>
+      <div class="form-floating" style="color: gray">
+        <input
+          type="email"
+          class="form-control"
+          id="floatingInput"
+          placeholder="name@example.com"
+          v-model="this.name"
+        />
+        <label for="floatingInput">Name</label>
+      </div>
+      <div class="form-floating" style="color: gray">
+        <input
+          type="email"
+          class="form-control"
+          id="floatingInput"
+          placeholder="name@example.com"
+          v-model="this.surname"
+        />
+        <label for="floatingInput">Surname</label>
+      </div>
+      <button class="btn btn-outline-warning" @click="createUser()">
+        Register user
+      </button>
+    </div>
+    <div class="d-flex justify-content-center mt-5" v-else>
+      <div
+        class="spinner-border"
+        style="width: 5rem; height: 5rem"
+        role="status"
+      >
+        <span class="visually-hidden">Loading...</span>
+      </div>
     </div>
   </div>
 </template>
@@ -29,6 +90,14 @@ import { useRouter } from "vue-router";
 
 export default {
   components: { Navbar },
+  setup() {
+    const router = useRouter();
+
+    return {
+      store,
+      router,
+    };
+  },
   data() {
     return {
       email: "",
@@ -61,7 +130,6 @@ export default {
       } else {
         alert("All field must be filled");
       }
-      useRouter().push("/userBrowser");
     },
     createDocForUser: async function (uid) {
       await db
@@ -75,20 +143,15 @@ export default {
           statusBlocked: false,
         })
         .then(() => {
-          alert("User was created");
           this.email = "";
           this.password = "";
           this.name = "";
           this.surname = "";
+          this.router.push("/userBrowser");
         });
 
       this.creatingUser = false;
     },
-  },
-  setup() {
-    return {
-      store,
-    };
   },
 };
 </script>
