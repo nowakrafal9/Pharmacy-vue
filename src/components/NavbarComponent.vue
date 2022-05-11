@@ -25,10 +25,28 @@
             align-items-center
           "
         >
-          <li class="nav-item">
-            <router-link to="/">
-              <a class="nav-link text-light" aria-current="page">Products</a>
-            </router-link>
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle text-light"
+              id="navbarDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Products
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li>
+                <router-link to="/"
+                  ><a class="dropdown-item w-100">Product list</a></router-link
+                >
+              </li>
+              <li>
+                <router-link to="/addProduct"
+                  ><a class="dropdown-item w-100">New product</a></router-link
+                >
+              </li>
+            </ul>
           </li>
           <li class="nav-item dropdown" v-if="store.state.isAdmin">
             <a

@@ -28,23 +28,23 @@
           <input
             type="email"
             class="form-control"
-            id="floatingInput"
+            id="emailInput"
             placeholder="name@example.com"
             v-model="email"
             required
           />
-          <label for="floatingInput">Email address</label>
+          <label for="emailInput">Email address</label>
         </div>
         <div class="form-floating mt-3" style="color: gray">
           <input
             type="password"
             class="form-control"
-            id="floatingInput"
+            id="passInput"
             placeholder="name@example.com"
             v-model="password"
             required
           />
-          <label for="floatingInput">Password</label>
+          <label for="passInput">Password</label>
         </div>
         <br />
         <input type="submit" value="Login" class="btn btn-outline-warning" />

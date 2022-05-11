@@ -342,87 +342,30 @@ export default {
     this.getAllData();
   },
   methods: {
-    showDetail: function (index) {
-      this.show = true;
-      this.editPrice = false;
-      this.editQuantity = false;
+    clearFilter: function () {
+      if (
+        this.previousProductName != "" ||
+        this.previousSelectedBrand != "All brands" ||
+        this.previousSelectedCategory != "All categories"
+      ) {
+        this.dataDownloaded = false;
 
-      if (this.currentIndex == index) {
+        this.editPrice = false;
+        this.editQuantity = false;
         this.show = false;
-        this.currentIndex = null;
-        return;
       }
 
-      if (this.currentIndex != index || this.currentIndex == null) {
-        this.currentIndex = index;
-        return;
+      if (!this.dataDownloaded) {
+        this.getAllData();
       }
-    },
-    editField: function (fieldToEdit) {
-      if (fieldToEdit == "price") {
-        if (this.editPrice) {
-          this.editPrice = false;
-          return;
-        }
-        this.editPrice = true;
-        this.editQuantity = false;
-        this.editedValue = this.products[this.currentIndex].price;
-      }
-      if (fieldToEdit == "quantity") {
-        if (this.editQuantity) {
-          this.editQuantity = false;
-          return;
-        }
-        this.editQuantity = true;
-        this.editPrice = false;
-        this.editedValue = this.products[this.currentIndex].quantity;
-      }
-    },
-    saveChanges: function () {
-      if (this.editPrice) {
-        this.editPrice = false;
-        if (this.editedValue != this.products[this.currentIndex].price) {
-          this.products[this.currentIndex].price = this.editedValue;
-          db.collection("products")
-            .doc(this.products[this.currentIndex].id)
-            .update("price", this.products[this.currentIndex].price);
-        }
-      } else if (this.editQuantity) {
-        this.editQuantity = false;
 
-        if (this.editedValue != this.products[this.currentIndex].quantity) {
-          this.products[this.currentIndex].quantity = this.editedValue;
-          db.collection("products")
-            .doc(this.products[this.currentIndex].id)
-            .update("quantity", this.products[this.currentIndex].quantity);
-        }
-      }
-    },
-    getAllData: async function () {
-      this.products = [];
+      this.productName = "";
+      this.selectedBrand = "All brands";
+      this.selectedCategory = "All categories";
 
-      let productRef = db.collection("/products");
-      await productRef
-        .orderBy("productName", "asc")
-        .get()
-        .then((snapshot) => {
-          snapshot.forEach((childSnapshot) => {
-            let id = childSnapshot.id;
-            let data = childSnapshot.data();
-
-            this.products.push({
-              id: id,
-              productName: data.productName,
-              brand: data.brand,
-              category: data.category,
-              price: data.price,
-              quantity: data.quantity,
-            });
-          });
-          this.dataDownloaded = true;
-        });
-
-      this.setPages();
+      this.previousProductName = "";
+      this.previousSelectedBrand = "All brands";
+      this.previousSelectedCategory = "All categories";
     },
     filterData: async function () {
       if (
@@ -485,30 +428,31 @@ export default {
           });
       }
     },
-    clearFilter: function () {
-      if (
-        this.previousProductName != "" ||
-        this.previousSelectedBrand != "All brands" ||
-        this.previousSelectedCategory != "All categories"
-      ) {
-        this.dataDownloaded = false;
+    getAllData: async function () {
+      this.products = [];
 
-        this.editPrice = false;
-        this.editQuantity = false;
-        this.show = false;
-      }
+      let productRef = db.collection("/products");
+      await productRef
+        .orderBy("productName", "asc")
+        .get()
+        .then((snapshot) => {
+          snapshot.forEach((childSnapshot) => {
+            let id = childSnapshot.id;
+            let data = childSnapshot.data();
 
-      if (!this.dataDownloaded) {
-        this.getAllData();
-      }
+            this.products.push({
+              id: id,
+              productName: data.productName,
+              brand: data.brand,
+              category: data.category,
+              price: data.price,
+              quantity: data.quantity,
+            });
+          });
+          this.dataDownloaded = true;
+        });
 
-      this.productName = "";
-      this.selectedBrand = "All brands";
-      this.selectedCategory = "All categories";
-
-      this.previousProductName = "";
-      this.previousSelectedBrand = "All brands";
-      this.previousSelectedCategory = "All categories";
+      this.setPages();
     },
     FirstPage: function () {
       this.currentPage = 1;
@@ -560,10 +504,66 @@ export default {
       this.firstRecord = 0;
       this.lastRecord = this.recordsPerPage;
     },
+    showDetail: function (index) {
+      this.show = true;
+      this.editPrice = false;
+      this.editQuantity = false;
+
+      if (this.currentIndex == index) {
+        this.show = false;
+        this.currentIndex = null;
+        return;
+      }
+
+      if (this.currentIndex != index || this.currentIndex == null) {
+        this.currentIndex = index;
+        return;
+      }
+    },
     closeDetails: function () {
       this.show = false;
       this.editPrice = false;
       this.editQuantity = false;
+    },
+    editField: function (fieldToEdit) {
+      if (fieldToEdit == "price") {
+        if (this.editPrice) {
+          this.editPrice = false;
+          return;
+        }
+        this.editPrice = true;
+        this.editQuantity = false;
+        this.editedValue = this.products[this.currentIndex].price;
+      }
+      if (fieldToEdit == "quantity") {
+        if (this.editQuantity) {
+          this.editQuantity = false;
+          return;
+        }
+        this.editQuantity = true;
+        this.editPrice = false;
+        this.editedValue = this.products[this.currentIndex].quantity;
+      }
+    },
+    saveChanges: function () {
+      if (this.editPrice) {
+        this.editPrice = false;
+        if (this.editedValue != this.products[this.currentIndex].price) {
+          this.products[this.currentIndex].price = this.editedValue;
+          db.collection("products")
+            .doc(this.products[this.currentIndex].id)
+            .update("price", this.products[this.currentIndex].price);
+        }
+      } else if (this.editQuantity) {
+        this.editQuantity = false;
+
+        if (this.editedValue != this.products[this.currentIndex].quantity) {
+          this.products[this.currentIndex].quantity = this.editedValue;
+          db.collection("products")
+            .doc(this.products[this.currentIndex].id)
+            .update("quantity", this.products[this.currentIndex].quantity);
+        }
+      }
     },
   },
 };
