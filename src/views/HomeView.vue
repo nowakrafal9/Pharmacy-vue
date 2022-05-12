@@ -270,7 +270,7 @@
         Your account is currently blocked. <br />
         Contact with administrator to unlock your account
       </h2>
-      <button @click="Logout">Logout</button>
+      <button @click="Logout" class="btn btn-outline-warning">Logout</button>
     </div>
   </div>
   <div class="d-flex justify-content-center mt-5" v-else>
