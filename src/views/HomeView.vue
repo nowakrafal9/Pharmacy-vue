@@ -3,6 +3,7 @@
     <div v-if="!store.state.isBlocked">
       <Navbar />
       <div class="m-3">
+        <!-- Searchbar -->
         <div class="input-group gap-2 w-50 justify-content-center">
           <input
             type="search"
@@ -49,6 +50,7 @@
         </div>
 
         <div class="splitContent">
+          <!-- Product browser -->
           <div class="d-flex mt-3 align-baseline justify-content-center">
             <div class="w-100" v-if="this.dataDownloaded">
               <table class="table table-striped table-dark w-100">
@@ -146,6 +148,7 @@
             </div>
           </div>
 
+          <!-- Product details -->
           <div
             class="d-flex align-baseline justify-content-center"
             v-if="this.show"
@@ -265,6 +268,8 @@
         </div>
       </div>
     </div>
+
+    <!-- Blocked user view -->
     <div v-else class="m-3">
       <h2>
         Your account is currently blocked. <br />
@@ -273,6 +278,8 @@
       <button @click="Logout" class="btn btn-outline-warning">Logout</button>
     </div>
   </div>
+
+  <!-- Loading effect -->
   <div class="d-flex justify-content-center mt-5" v-else>
     <div class="spinner-border" style="width: 5rem; height: 5rem" role="status">
       <span class="visually-hidden">Loading...</span>

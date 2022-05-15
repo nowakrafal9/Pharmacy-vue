@@ -26,7 +26,7 @@
       v-if="!this.creatingProduct"
     >
       <h2 class="m-0">Add product</h2>
-      <div class="form-floating" style="color: gray">
+      <div class="form-floating w-100" style="color: gray">
         <input
           type="text"
           class="form-control"
@@ -65,7 +65,7 @@
         </select>
         <label for="brand">Category</label>
       </div>
-      <div class="form-floating" style="color: gray">
+      <div class="form-floating w-100" style="color: gray">
         <input
           type="number"
           class="form-control"
@@ -75,7 +75,7 @@
         />
         <label for="priceInput">Price</label>
       </div>
-      <div class="form-floating" style="color: gray">
+      <div class="form-floating w-100" style="color: gray">
         <input
           type="number"
           class="form-control"
